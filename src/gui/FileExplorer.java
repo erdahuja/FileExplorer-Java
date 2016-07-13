@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,9 +13,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Logic.ScanDemo;
+
 public class FileExplorer extends JFrame {
 
 	private JPanel contentPane;
+	private List list = new List();
+	File selectedFile;
 
 	public static void main(String[] args) {
 
@@ -34,11 +39,9 @@ public class FileExplorer extends JFrame {
 		JButton btnBrowse = new JButton("Browse");
 		btnBrowse.setBounds(12, 12, 117, 25);
 		btnBrowse.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				openDialogBox();
-
 			}
 
 		});
@@ -51,7 +54,6 @@ public class FileExplorer extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				showColor();
-
 			}
 
 		});
@@ -61,12 +63,15 @@ public class FileExplorer extends JFrame {
 
 	protected void openDialogBox() {
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.showOpenDialog(this);
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		File selectedFile = fileChooser.getSelectedFile();
-		File files[] = ScanDemo.getFiles(selectedFile);
-		System.out.println(selectedFile.getAbsolutePath());
-
+		selectedFile = fileChooser.getSelectedFile();
+		File files[] = ScanDemo.getFiles(selectedFile, null);
+		if (files.length > 0) {
+			for (File file : files) {
+				list.add(file.getPath());
+			}
+		}
 	}
 
 	private void showColor() {
